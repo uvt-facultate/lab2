@@ -35,6 +35,7 @@
     "Application.SystemA.executor": "Run",
     "Application.SystemMain.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/irinafelea/Desktop/Facultate/Master/An 2 - Sem I/Arhitecturi pentru sisteme software/laborator/lab2",
@@ -43,6 +44,9 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -59,7 +63,6 @@
   <component name="RunManager" selected="Application.SystemA">
     <configuration name="SystemA" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="system_a.SystemA" />
-      <module name="lab2" />
       <option name="PROGRAM_PARAMETERS" value="datain.txt sistemA.txt" />
       <extension name="coverage">
         <pattern>
@@ -114,6 +117,7 @@
       <updated>1760639137695</updated>
       <workItem from="1760639138776" duration="1399000" />
       <workItem from="1760879899885" duration="9176000" />
+      <workItem from="1760951556350" duration="280000" />
     </task>
     <servers />
   </component>
