@@ -2,13 +2,14 @@ package system_a;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 
 /**
- * Clasa reprezinta o inregistrare corespunzatoare unui student. 
- * Contine informatii personale despre student si codurile cursurilor absolvite de acesta. 
- * Aceasta clasa este construita dintr-un sir orientat pe campuri separate de spatii. 
+ * Clasa reprezinta o inregistrare corespunzatoare unui student.
+ * Contine informatii personale despre student si codurile cursurilor absolvite de acesta.
+ * Aceasta clasa este construita dintr-un sir orientat pe campuri separate de spatii.
  */
 public class Student {
 
@@ -28,16 +29,11 @@ public class Student {
     private String sProgram;
 
     /**
-     * O lista ce contine codurile cursurilor pe care le-a absolvit acest student. 
+     * O lista ce contine codurile cursurilor pe care le-a absolvit acest student.
      * Elementele din lista sunt obiecte de tip <code>Integer</code> reprezentand
      * numerele cursurilor absolvite.
      */
     protected List vCompleted;
-
-    /**
-     * Un parametru ce reprezinta acceptarea sau refuzul unui student.
-     */
-    private boolean isAccepted;
 
     public String getsName() {
         return sName;
@@ -55,31 +51,28 @@ public class Student {
         this.sProgram = sProgram;
     }
 
-    public boolean isAccepted() {
-        return isAccepted;
-    }
-
-    public void setAccepted(boolean accepted) {
-        isAccepted = accepted;
-    }
-
     /**
-     * Construieste o inregistrare student prin parsarea sirului dat. 
+     * Construieste o inregistrare student prin parsarea sirului dat.
      * Argumentul <code>sInput</code> este orientat pe campuri avand spatiul ca separator.
      * Primele trei campuri necesare sunt ID student, nume student si specializarea la care este inscris.
-     * Urmeaza, daca studentul a absolvit o serie de cursuri, codurile numerice ale acestora. 
+     * Urmeaza, daca studentul a absolvit o serie de cursuri, codurile numerice ale acestora.
      * Desi nu e necesar, evitati includerea de caractere"newline" in sirul <code>sInput</code>
-     
+     *
      * @param sInput sirul ce reprezinta inregistrarea corespunzatoare studentului
      */
-    public Student(String sInput)
-    {
+    public Student(String sInput) {
         StringTokenizer objTokenizer = new StringTokenizer(sInput);
 
         // Preluarea ID-ului si numelui studentului si a specializarii la care este inscris.
-        this.sSID     = objTokenizer.nextToken();
-        this.sName    = objTokenizer.nextToken();
-        this.sName    = this.sName + " " + objTokenizer.nextToken();
+        String next = objTokenizer.nextToken();
+        if (Objects.equals(next, "accepted") || Objects.equals(next, "rejected")) {
+            this.sSID = next;
+            this.sSID = this.sSID + " " + objTokenizer.nextToken();
+        } else {
+            this.sSID = next;
+        }
+        this.sName = objTokenizer.nextToken();
+        this.sName = this.sName + " " + objTokenizer.nextToken();
         this.sProgram = objTokenizer.nextToken();
 
         // Preluarea cursurilor absolvite de student.
@@ -93,7 +86,7 @@ public class Student {
      * Precizeaza daca studentul a absolvit un curs dat.
      *
      * @param iCourse codul numeric al cursului dat
-     * @return <code>true</code> daca si numai daca acest student a absolvit cursul 
+     * @return <code>true</code> daca si numai daca acest student a absolvit cursul
      * al carui cod este specificat prin intregul <code>iCourse</code>.
      */
     public boolean hasCompleted(int iCourse) {
@@ -104,7 +97,7 @@ public class Student {
      * Precizeaza daca studentul este inscris la o specializare data.
      *
      * @param sProgram numele specializarii date.
-     * @return <code>true</code> daca si numai daca studentul este inscris 
+     * @return <code>true</code> daca si numai daca studentul este inscris
      * la specializarea specificata prin sirul <code>sProgram</code>
      */
     public boolean isAffiliatedWith(String sProgram) {
@@ -112,7 +105,7 @@ public class Student {
     }
 
     /**
-     * Returneaza o reprezentare sub forma de sir a inregistrarii corespunzatoare acestui student. 
+     * Returneaza o reprezentare sub forma de sir a inregistrarii corespunzatoare acestui student.
      * Sirul rezultat va fi in acelasi format ca si argumentul constructorului acestei clase.
      *
      * @return o reprezentare sub forma de sir a inregistrarii corepunzatoare acestui student
@@ -122,7 +115,7 @@ public class Student {
         String sReturn = this.sSID + " " + this.sName + " " + this.sProgram;
 
         // Adaugarea codurilor numerice ale cursurilor.
-        for (int i=0; i<this.vCompleted.size(); i++) {
+        for (int i = 0; i < this.vCompleted.size(); i++) {
             sReturn = sReturn + " " + this.vCompleted.get(i).toString();
         }
 

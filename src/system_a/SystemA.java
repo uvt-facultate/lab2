@@ -14,9 +14,9 @@ public class SystemA {
      */
     public static void main(String[] args) {
         // Verificarea numarului parametrilor de intrare.
-        if (args.length != 2) {
+        if (args.length != 3) {
             System.out.println("Numar incorect de parametri");
-            System.out.println("Utilizare corecta: java SystemMain <fisier_de_intrare> <fisier_de_iesire>");
+            System.out.println("Utilizare corecta: java SystemMain <fisier_de_intrare> <fisier_de_iesire_acc> <fisier_de_iesire_rej>");
             System.exit(1);
         }
 
@@ -31,6 +31,12 @@ public class SystemA {
         File parentFile = new File(args[1]).getAbsoluteFile().getParentFile();
         if (!parentFile.exists() && !parentFile.mkdir()) {
             System.out.println("Nu s-a putut crea directorul parinte " + args[1]);
+            System.exit(1);
+        }
+
+        File parentFile2 = new File(args[2]).getAbsoluteFile().getParentFile();
+        if (!parentFile2.exists() && !parentFile2.mkdir()) {
+            System.out.println("Nu s-a putut crea directorul parinte " + args[2]);
             System.exit(1);
         }
 
@@ -61,6 +67,7 @@ public class SystemA {
             BufferedReader roleMergedSync = new BufferedReader(new PipedReader(objTemp));
 
             BufferedWriter roleOutputFileSource = new BufferedWriter(new FileWriter(args[1]));
+            BufferedWriter roleOutputRejectedFileSource = new BufferedWriter(new FileWriter(args[2]));
 
             // Crearea filtrelor (transferul rolurilor ca parametrii, pentru a fi legati 
             // la porturile fiecarui filtru).
@@ -72,7 +79,7 @@ public class SystemA {
             CourseFilter filterScreen21701
                     = new CourseFilter("21701", roleNonISSync, roleNonISAcceptedSource, 21701);
             MergeFilter filterMergeAccepted
-                    = new MergeFilter("Accepted", roleISAcceptedSync, roleNonISAcceptedSync, roleMergedSource);
+                    = new MergeFilter("Accepted", roleISAcceptedSync, roleNonISAcceptedSync, roleMergedSource, roleOutputRejectedFileSource);
 
             SortFilter filterSortAccepted
                     = new SortFilter("Sort", roleMergedSync, roleOutputFileSource, args[1]);

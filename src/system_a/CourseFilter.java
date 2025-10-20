@@ -74,11 +74,15 @@ public class CourseFilter extends Filter {
 
         // Scrie inregistrarea corespunzatoare studentului la portul de iesire daca este indeplinita conditia.
         if (objStudent.hasCompleted(this.iCourse)) {
+            objStudent.sSID = "accepted " + objStudent.sSID;
             this.pOutput.write(objStudent.toString());
             this.pOutput.newLine();
             this.pOutput.flush();
         } else {
-            System.out.println(objStudent.toString());
+            objStudent.sSID = "rejected " + objStudent.sSID;
+            this.pOutput.write(objStudent.toString());
+            this.pOutput.newLine();
+            this.pOutput.flush();
         }
     }
 }
