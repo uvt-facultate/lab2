@@ -79,10 +79,10 @@ public class SystemA {
             CourseFilter filterScreen21701
                     = new CourseFilter("21701", roleNonISSync, roleNonISAcceptedSource, 21701);
             MergeFilter filterMergeAccepted
-                    = new MergeFilter("Accepted", roleISAcceptedSync, roleNonISAcceptedSync, roleMergedSource, roleOutputRejectedFileSource);
+                    = new MergeFilter("Accepted", roleISAcceptedSync, roleNonISAcceptedSync, roleMergedSource);
 
             SortFilter filterSortAccepted
-                    = new SortFilter("Sort", roleMergedSync, roleOutputFileSource, args[1]);
+                    = new SortFilter("Sort", roleMergedSync, roleOutputFileSource, roleOutputRejectedFileSource, args[1], args[2]);
 
             // _____________________________________________________________________
             // Executarea sistemului

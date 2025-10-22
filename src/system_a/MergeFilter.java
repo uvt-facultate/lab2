@@ -30,11 +30,6 @@ public class MergeFilter extends Filter {
     protected BufferedWriter pOutput;
 
     /**
-     * Portul de iesire.
-     **/
-    protected BufferedWriter pOutputRejected;
-
-    /**
      * Construieste un filtru unificator cu numele dat.
      * Porturile sunt impachetate intr-un flux de caratere buffer-at.
      *
@@ -44,7 +39,7 @@ public class MergeFilter extends Filter {
      * @param pOutput portul de iesire al acestui filtru
      */
     public MergeFilter(String sName, BufferedReader pInput1, BufferedReader pInput2,
-                       BufferedWriter pOutput, BufferedWriter pOutputRejected) {
+                       BufferedWriter pOutput) {
         // Executarea constructorului clasei parinte.
         super(sName);
 
@@ -52,7 +47,6 @@ public class MergeFilter extends Filter {
         this.pInput1 = pInput1;
         this.pInput2 = pInput2;
         this.pOutput = pOutput;
-        this.pOutputRejected = pOutputRejected;
     }
 
     /**
@@ -87,16 +81,8 @@ public class MergeFilter extends Filter {
         Student objStudent = new Student(pInput.readLine());
 
         // Scrierea inregistrarii la portul de iesire.
-        if (objStudent.sSID.contains("accepted")) {
-            objStudent.sSID = objStudent.sSID.replace("accepted ", "");
-            this.pOutput.write(objStudent.toString());
-            this.pOutput.newLine();
-            this.pOutput.flush();
-        } else {
-            objStudent.sSID = objStudent.sSID.replace("rejected ", "");
-            this.pOutputRejected.write(objStudent.toString());
-            this.pOutputRejected.newLine();
-            this.pOutputRejected.flush();
-        }
+        this.pOutput.write(objStudent.toString());
+        this.pOutput.newLine();
+        this.pOutput.flush();
     }
 }
