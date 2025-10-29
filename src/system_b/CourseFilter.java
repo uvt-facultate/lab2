@@ -23,7 +23,7 @@ public class CourseFilter extends Filter {
     protected BufferedWriter pOutput;
  
     /**
-     * Numarul cursului
+     * Numerele cursurilor
      **/
     protected int [] iCourses;
 
@@ -74,7 +74,7 @@ public class CourseFilter extends Filter {
 
         // Scrie inregistrarea corespunzatoare studentului la portul de iesire daca este indeplinita conditia.
         for (int courseId : this.iCourses) {
-            if (objStudent.hasCompleted(courseId)) { // studentul are oricare dintre aceste cursuri
+            if (objStudent.hasCompleted(courseId)) { // studentul a absolvit oricare dintre aceste cursuri
                 this.pOutput.write(objStudent.toString());
                 this.pOutput.newLine();
                 this.pOutput.flush();
