@@ -16,7 +16,7 @@ public class SystemA {
         // Verificarea numarului parametrilor de intrare.
         if (args.length != 3) {
             System.out.println("Numar incorect de parametri");
-            System.out.println("Utilizare corecta: java SystemMain <fisier_de_intrare> <fisier_de_iesire_acc> <fisier_de_iesire_rej>");
+            System.out.println("Utilizare corecta: java SystemA <fisier_de_intrare> <fisier_de_iesire_acc> <fisier_de_iesire_rej>");
             System.exit(1);
         }
 

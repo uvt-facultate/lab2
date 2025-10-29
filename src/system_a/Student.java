@@ -35,6 +35,12 @@ public class Student {
      */
     protected List vCompleted;
 
+    /**
+     * Un atribut care retine daca studentul a fost acceptat sau nu la cursul de care
+     * suntem interesati
+     */
+    protected String isAccepted;
+
     public String getsName() {
         return sName;
     }
@@ -66,8 +72,8 @@ public class Student {
         // Preluarea ID-ului si numelui studentului si a specializarii la care este inscris.
         String next = objTokenizer.nextToken();
         if (Objects.equals(next, "accepted") || Objects.equals(next, "rejected")) {
-            this.sSID = next;
-            this.sSID = this.sSID + " " + objTokenizer.nextToken();
+            this.isAccepted = next;
+            this.sSID = objTokenizer.nextToken();
         } else {
             this.sSID = next;
         }

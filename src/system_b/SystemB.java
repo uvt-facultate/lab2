@@ -16,7 +16,7 @@ public class SystemB {
         // Verificarea numarului parametrilor de intrare.
         if (args.length != 2) {
             System.out.println("Numar incorect de parametri");
-            System.out.println("Utilizare corecta: java SystemMain <fisier_de_intrare> <fisier_de_iesire>");
+            System.out.println("Utilizare corecta: java SystemB <fisier_de_intrare> <fisier_de_iesire>");
             System.exit(1);
         }
 

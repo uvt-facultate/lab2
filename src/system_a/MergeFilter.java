@@ -81,7 +81,7 @@ public class MergeFilter extends Filter {
         Student objStudent = new Student(pInput.readLine());
 
         // Scrierea inregistrarii la portul de iesire.
-        this.pOutput.write(objStudent.toString());
+        this.pOutput.write(objStudent.isAccepted + " " + objStudent.toString());
         this.pOutput.newLine();
         this.pOutput.flush();
     }

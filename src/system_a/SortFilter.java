@@ -67,13 +67,14 @@ public class SortFilter extends Filter {
 
         studentList.sort(Comparator.comparing(Student::getsName));
         for (Student s : studentList) {
-            if (s.sSID.contains("accepted")) {
-                freshWriter.write(s.getsName() + " " + s.getsProgram());
-                freshWriter.newLine();
-            } else {
-                freshWriterRejected.write(s.getsName() + " " + s.getsProgram());
-                freshWriterRejected.newLine();
-            }
+            if(s.isAccepted != null)
+                if (s.isAccepted.contains("accepted")) {
+                    freshWriter.write(s.getsName() + " " + s.getsProgram());
+                    freshWriter.newLine();
+                } else {
+                    freshWriterRejected.write(s.getsName() + " " + s.getsProgram());
+                    freshWriterRejected.newLine();
+                }
         }
         freshWriter.flush();
         freshWriter.close();
