@@ -21,6 +21,11 @@ public class CourseFilter extends Filter {
      * Portul de iesire.
      **/
     protected BufferedWriter pOutput;
+
+    /**
+     * Portul de iesire pentru studentii respinsi.
+     **/
+    protected BufferedWriter pOutputRejected;
  
     /**
      * Numarul cursului
@@ -36,16 +41,18 @@ public class CourseFilter extends Filter {
      * @param sName   sirul ce reprezinta numele filtrului
      * @param pInput  portul de intrare al acestui filtru
      * @param pOutput portul de iesire al acestui filtru
+     * @param pOutput portul de iesire pentru studentii respinsi al acestui filtru
      * @param iCourse numarul cursului
      */
     public CourseFilter(String sName, 
-                        BufferedReader pInput, BufferedWriter pOutput, int iCourse) {
+                        BufferedReader pInput, BufferedWriter pOutput, BufferedWriter pOutputRejected, int iCourse) {
         // Executarea constructorului din clasa parinte.
         super(sName);
 
         // Initializarea porturilor de intrare si iesire.
         this.pInput  = pInput;
         this.pOutput = pOutput;
+        this.pOutputRejected = pOutputRejected;
 
         // Setarea numarului cursului.
         this.iCourse = iCourse;
@@ -74,15 +81,13 @@ public class CourseFilter extends Filter {
 
         // Scrie inregistrarea corespunzatoare studentului la portul de iesire daca este indeplinita conditia.
         if (objStudent.hasCompleted(this.iCourse)) {
-            objStudent.sSID = "accepted " + objStudent.sSID;
             this.pOutput.write(objStudent.toString());
             this.pOutput.newLine();
             this.pOutput.flush();
         } else {
-            objStudent.sSID = "rejected " + objStudent.sSID;
-            this.pOutput.write(objStudent.toString());
-            this.pOutput.newLine();
-            this.pOutput.flush();
+            this.pOutputRejected.write(objStudent.toString());
+            this.pOutputRejected.newLine();
+            this.pOutputRejected.flush();
         }
     }
 }

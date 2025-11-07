@@ -14,9 +14,9 @@ public class SystemA {
      */
     public static void main(String[] args) {
         // Verificarea numarului parametrilor de intrare.
-        if (args.length != 3) {
+        if (args.length != 2) {
             System.out.println("Numar incorect de parametri");
-            System.out.println("Utilizare corecta: java SystemA <fisier_de_intrare> <fisier_de_iesire_acc> <fisier_de_iesire_rej>");
+            System.out.println("Utilizare corecta: java SystemMain <fisier_de_intrare> <fisier_de_iesire>");
             System.exit(1);
         }
 
@@ -31,12 +31,6 @@ public class SystemA {
         File parentFile = new File(args[1]).getAbsoluteFile().getParentFile();
         if (!parentFile.exists() && !parentFile.mkdir()) {
             System.out.println("Nu s-a putut crea directorul parinte " + args[1]);
-            System.exit(1);
-        }
-
-        File parentFile2 = new File(args[2]).getAbsoluteFile().getParentFile();
-        if (!parentFile2.exists() && !parentFile2.mkdir()) {
-            System.out.println("Nu s-a putut crea directorul parinte " + args[2]);
             System.exit(1);
         }
 
@@ -60,29 +54,36 @@ public class SystemA {
             BufferedWriter roleISAcceptedSource = new BufferedWriter(objTemp = new PipedWriter());
             BufferedReader roleISAcceptedSync = new BufferedReader(new PipedReader(objTemp));
 
+            BufferedWriter roleISRejectedSource = new BufferedWriter(objTemp = new PipedWriter());
+            BufferedReader roleISRejectedSync = new BufferedReader(new PipedReader(objTemp));
+
             BufferedWriter roleNonISAcceptedSource = new BufferedWriter(objTemp = new PipedWriter());
             BufferedReader roleNonISAcceptedSync = new BufferedReader(new PipedReader(objTemp));
 
-            BufferedWriter roleMergedSource = new BufferedWriter(objTemp = new PipedWriter());
-            BufferedReader roleMergedSync = new BufferedReader(new PipedReader(objTemp));
+            BufferedWriter roleNonISRejectedSource = new BufferedWriter(objTemp = new PipedWriter());
+            BufferedReader roleNonISRejectedSync = new BufferedReader(new PipedReader(objTemp));
+
+            BufferedWriter roleMergedAcceptedSource = new BufferedWriter(objTemp = new PipedWriter());
+            BufferedReader roleMergedAcceptedSync = new BufferedReader(new PipedReader(objTemp));
 
             BufferedWriter roleOutputFileSource = new BufferedWriter(new FileWriter(args[1]));
-            BufferedWriter roleOutputRejectedFileSource = new BufferedWriter(new FileWriter(args[2]));
+            BufferedWriter roleOutputFileRejectedSource = new BufferedWriter(new FileWriter(args[1].replace(".txt", "-rejected.txt")));
 
-            // Crearea filtrelor (transferul rolurilor ca parametrii, pentru a fi legati 
+            // Crearea filtrelor (transferul rolurilor ca parametrii, pentru a fi legati
             // la porturile fiecarui filtru).
             System.out.println("Controller: Creare componente ...");
             SplitFilter filterSplitIS
                     = new SplitFilter("IS", roleInputFileSync, roleISSource, roleNonISSource, "IS");
             CourseFilter filterScreen17651
-                    = new CourseFilter("17651", roleISSync, roleISAcceptedSource, 17651);
+                    = new CourseFilter("17651", roleISSync, roleISAcceptedSource, roleISRejectedSource, 17651);
             CourseFilter filterScreen21701
-                    = new CourseFilter("21701", roleNonISSync, roleNonISAcceptedSource, 21701);
+                    = new CourseFilter("21701", roleNonISSync, roleNonISAcceptedSource, roleNonISRejectedSource, 21701);
             MergeFilter filterMergeAccepted
-                    = new MergeFilter("Accepted", roleISAcceptedSync, roleNonISAcceptedSync, roleMergedSource);
-
+                    = new MergeFilter("Accepted", roleISAcceptedSync, roleNonISAcceptedSync, roleMergedAcceptedSource);
+            MergeFilter filterMergeRejected
+                    = new MergeFilter("Rejected", roleISRejectedSync, roleNonISRejectedSync, roleOutputFileRejectedSource);
             SortFilter filterSortAccepted
-                    = new SortFilter("Sort", roleMergedSync, roleOutputFileSource, roleOutputRejectedFileSource, args[1], args[2]);
+                    = new SortFilter("Sort", roleMergedAcceptedSync, roleOutputFileSource, args[1]);
 
             // _____________________________________________________________________
             // Executarea sistemului
@@ -94,17 +95,20 @@ public class SystemA {
             filterScreen17651.start();
             filterScreen21701.start();
             filterMergeAccepted.start();
+            filterMergeRejected.start();
             filterSortAccepted.start();
 
-            // Asteapta pana la terminarea datelor de pe lanturile conductelor si filtrelor. 
+            // Asteapta pana la terminarea datelor de pe lanturile conductelor si filtrelor.
             // Ordinea de verificare, de la intrare la iesire, este importanta pentru a evita problemele de concurenta.
             // Analizati ce s-ar intampla daca lantul pipe-and-filter ar fi circular.
             while (roleInputFileSync.ready() || filterSplitIS.busy()
                     || filterScreen17651.busy() || filterScreen21701.busy()
                     || filterMergeAccepted.busy() || filterSortAccepted.busy()
-                    || roleISSync.ready() || roleISAcceptedSync.ready()
-                    || roleNonISSync.ready() || roleNonISAcceptedSync.ready()
-                    || roleMergedSync.ready()) {
+                    || filterMergeRejected.busy()
+                    || roleISSync.ready() || roleNonISSync.ready()
+                    || roleISAcceptedSync.ready() || roleNonISAcceptedSync.ready()
+                    || roleISRejectedSync.ready() || roleNonISRejectedSync.ready()
+                    || roleMergedAcceptedSync.ready()) {
                 // Afiseaza un semnal de feedback signal si transfera controlul pentru planifcarea altui fir de executie.
                 System.out.print('.');
                 Thread.yield();
@@ -120,11 +124,13 @@ public class SystemA {
             filterScreen17651.interrupt();
             filterScreen21701.interrupt();
             filterMergeAccepted.interrupt();
+            filterMergeRejected.interrupt();
             filterSortAccepted.interrupt();
 
             // Verificarea faptului ca filtrele sunt distruse.
-            while (filterSplitIS.isAlive() == false || filterScreen17651.isAlive() == false
-                    || filterScreen21701.isAlive() == false || filterMergeAccepted.isAlive() == false
+            while (filterSplitIS.isAlive() == false
+                    || filterScreen17651.isAlive() == false || filterScreen21701.isAlive() == false
+                    || filterMergeAccepted.isAlive() == false || filterMergeRejected.isAlive() == false
                     || filterSortAccepted.isAlive() == false) {
                 // Afiseaza un semnal de feedback si transfera controlul planificatorului de fire de execuitie.
                 System.out.print('.');
@@ -135,6 +141,7 @@ public class SystemA {
             System.out.println("Controller: Distrugerea tuturor conectorilor ...");
             roleInputFileSync.close();
             roleOutputFileSource.close();
+            roleOutputFileRejectedSource.close();
             roleISSource.close();
             roleISSync.close();
             roleNonISSource.close();
@@ -143,6 +150,11 @@ public class SystemA {
             roleISAcceptedSync.close();
             roleNonISAcceptedSource.close();
             roleNonISAcceptedSync.close();
+            roleISRejectedSource.close();
+            roleISRejectedSync.close();
+            roleNonISRejectedSource.close();
+            roleNonISRejectedSync.close();
+
         } catch (Exception e) {
             // Afisarea de informatii pentru debugging.
             System.out.println("Exceptie aparuta in SystemMain.");

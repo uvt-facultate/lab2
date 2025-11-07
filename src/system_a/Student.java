@@ -35,12 +35,6 @@ public class Student {
      */
     protected List vCompleted;
 
-    /**
-     * Un atribut care retine daca studentul a fost acceptat sau nu la cursul de care
-     * suntem interesati
-     */
-    protected String isAccepted;
-
     public String getsName() {
         return sName;
     }
@@ -53,10 +47,6 @@ public class Student {
         return sProgram;
     }
 
-    public void setsProgram(String sProgram) {
-        this.sProgram = sProgram;
-    }
-
     /**
      * Construieste o inregistrare student prin parsarea sirului dat.
      * Argumentul <code>sInput</code> este orientat pe campuri avand spatiul ca separator.
@@ -66,19 +56,14 @@ public class Student {
      *
      * @param sInput sirul ce reprezinta inregistrarea corespunzatoare studentului
      */
-    public Student(String sInput) {
+    public Student(String sInput)
+    {
         StringTokenizer objTokenizer = new StringTokenizer(sInput);
 
         // Preluarea ID-ului si numelui studentului si a specializarii la care este inscris.
-        String next = objTokenizer.nextToken();
-        if (Objects.equals(next, "accepted") || Objects.equals(next, "rejected")) {
-            this.isAccepted = next;
-            this.sSID = objTokenizer.nextToken();
-        } else {
-            this.sSID = next;
-        }
-        this.sName = objTokenizer.nextToken();
-        this.sName = this.sName + " " + objTokenizer.nextToken();
+        this.sSID     = objTokenizer.nextToken();
+        this.sName    = objTokenizer.nextToken();
+        this.sName    = this.sName + " " + objTokenizer.nextToken();
         this.sProgram = objTokenizer.nextToken();
 
         // Preluarea cursurilor absolvite de student.
@@ -126,5 +111,12 @@ public class Student {
         }
 
         return sReturn;
+    }
+
+    /**
+     * @return numele si programul studentului
+     */
+    public String printNameAndProgram() {
+        return this.sName + " " + this.sProgram;
     }
 }
